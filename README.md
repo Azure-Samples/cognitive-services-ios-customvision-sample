@@ -1,3 +1,9 @@
+---
+services: cognitive-services,custom-vision
+platforms: swift, iOS
+author: adambehringer
+---
+
 # Sample iOS application for models exported from Custom Vision Service
 This sample application demonstrates how to take a model exported from the [Custom Vision Service](www.customvision.ai) in the [CoreML format and add it to a template iOS 11 application](https://developer.apple.com/videos/play/wwdc2017/506/) for real-time image classification. 
 
