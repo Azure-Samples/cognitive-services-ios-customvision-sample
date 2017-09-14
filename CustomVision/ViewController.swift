@@ -27,9 +27,9 @@ class ViewController: UIViewController {
   var captureDevice: AVCaptureDevice?
   let videoOutput = AVCaptureVideoDataOutput()
   var unknownCounter = 0 // used to track how many unclassified images in a row
+  let confidence: Float = 0.7
   
   // MARK: Load the Model
-  
   let targetImageSize = CGSize(width: 227, height: 227) // must match model data input
   
   lazy var classificationRequest: [VNRequest] = {
@@ -57,12 +57,14 @@ class ViewController: UIViewController {
     
     // Use results to update user interface (includes basic filtering)
     print("\(best.identifier): \(best.confidence)")
-    if best.identifier.starts(with: "Unknown") || best.confidence < 0.4 {
+    if best.identifier.starts(with: "Unknown") || best.confidence < confidence {
       if self.unknownCounter < 3 { // a bit of a low-pass filter to avoid flickering
         self.unknownCounter += 1
       } else {
         self.unknownCounter = 0
-        self.bubbleLayer.string = nil
+        DispatchQueue.main.async {
+          self.bubbleLayer.string = nil
+        }
       }
     } else {
       self.unknownCounter = 0
