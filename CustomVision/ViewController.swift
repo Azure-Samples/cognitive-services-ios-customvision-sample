@@ -30,8 +30,6 @@ class ViewController: UIViewController {
   let confidence: Float = 0.7
   
   // MARK: Load the Model
-  let targetImageSize = CGSize(width: 227, height: 227) // must match model data input
-  
   lazy var classificationRequest: [VNRequest] = {
     do {
       // Load the Custom Vision model.
@@ -158,16 +156,8 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
       }
     }
     
-    // Crop and resize the image data.
-    // Note, this uses a Core Image pipeline that could be appended with other pre-processing.
-    // If we don't want to do anything custom, we can remove this step and let the Vision framework handle
-    // crop and resize as long as we are careful to pass the orientation properly.
-    guard let croppedBuffer = croppedSampleBuffer(sampleBuffer, targetSize: targetImageSize) else {
-      return
-    }
-    
     do {
-      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: croppedBuffer, options: [:])
+        let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: CMSampleBufferGetImageBuffer(sampleBuffer)!, options: [:])
       try classifierRequestHandler.perform(classificationRequest)
     } catch {
       print(error)
