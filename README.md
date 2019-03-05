@@ -10,7 +10,7 @@ This sample application demonstrates how to take a model exported from the [Cust
 ## Getting Started
 
 ### Prerequisites
-- [XCode 9 beta](https://developer.apple.com/support/beta-software/)
+- [XCode 10](https://developer.apple.com/xcode/)
 - iOS device running [iOS 11 beta](https://support.apple.com/en-us/HT203282#archive)
 - An account at [Custom Vision Service](https://www.customvision.ai) 
 ### Quickstart
