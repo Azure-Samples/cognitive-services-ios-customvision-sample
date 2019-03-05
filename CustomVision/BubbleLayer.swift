@@ -55,7 +55,7 @@ class BubbleLayer : CALayer {
         layerLabel.font = font
         layerLabel.fontSize = font.pointSize
         layerLabel.foregroundColor = textColor.cgColor
-        layerLabel.alignmentMode = kCAAlignmentCenter
+        layerLabel.alignmentMode = CATextLayerAlignmentMode.center
         layerLabel.contentsScale = UIScreen.main.scale
         layerLabel.allowsFontSubpixelQuantization = true
         layerLabel.isWrapped = true

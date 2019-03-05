@@ -158,7 +158,10 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     do {
-      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: CMSampleBufferGetImageBuffer(sampleBuffer)!, options: [:])
+      guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+          fatalError("sampleBuffer is nil")
+      }
+      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: imageBuffer, options: [:])
       try classifierRequestHandler.perform(classificationRequest)
     } catch {
       print(error)
