@@ -159,14 +159,35 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     do {
       guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-          fatalError("sampleBuffer is nil")
+          fatalError("Can't convert to CVImageBuffer.")
       }
-      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: imageBuffer, options: [:])
+
+      let exifOrientation = exifOrientationFromDeviceOrientation()
+      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: imageBuffer, orientation: exifOrientation, options: [:])
       try classifierRequestHandler.perform(classificationRequest)
     } catch {
       print(error)
     }
   }
+}
+
+public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+    let curDeviceOrientation = UIDevice.current.orientation
+    let exifOrientation: CGImagePropertyOrientation
+    
+    switch curDeviceOrientation {
+    case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
+        exifOrientation = .left
+    case UIDeviceOrientation.landscapeLeft:       // Device oriented horizontally, home button on the right
+        exifOrientation = .upMirrored
+    case UIDeviceOrientation.landscapeRight:      // Device oriented horizontally, home button on the left
+        exifOrientation = .down
+    case UIDeviceOrientation.portrait:            // Device oriented vertically, home button on the bottom
+        exifOrientation = .up
+    default:
+        exifOrientation = .up
+    }
+    return exifOrientation
 }
 
 // Only used for debugging.
