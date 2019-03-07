@@ -30,8 +30,6 @@ class ViewController: UIViewController {
   let confidence: Float = 0.7
   
   // MARK: Load the Model
-  let targetImageSize = CGSize(width: 227, height: 227) // must match model data input
-  
   lazy var classificationRequest: [VNRequest] = {
     do {
       // Load the Custom Vision model.
@@ -39,6 +37,7 @@ class ViewController: UIViewController {
       // Then update the following line with the name of your new model.
       let model = try VNCoreMLModel(for: Fruit().model)
       let classificationRequest = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
+        classificationRequest.imageCropAndScaleOption = .centerCrop
       return [ classificationRequest ]
     } catch {
       fatalError("Can't load Vision ML model: \(error)")
@@ -158,16 +157,13 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
       }
     }
     
-    // Crop and resize the image data.
-    // Note, this uses a Core Image pipeline that could be appended with other pre-processing.
-    // If we don't want to do anything custom, we can remove this step and let the Vision framework handle
-    // crop and resize as long as we are careful to pass the orientation properly.
-    guard let croppedBuffer = croppedSampleBuffer(sampleBuffer, targetSize: targetImageSize) else {
-      return
-    }
-    
     do {
-      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: croppedBuffer, options: [:])
+      guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+          fatalError("Can't convert to CVImageBuffer.")
+      }
+
+      let exifOrientation = exifOrientationFromDeviceOrientation()
+      let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: imageBuffer, orientation: exifOrientation, options: [:])
       try classifierRequestHandler.perform(classificationRequest)
     } catch {
       print(error)
@@ -175,67 +171,23 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
   }
 }
 
-let context = CIContext()
-var rotateTransform: CGAffineTransform?
-var scaleTransform: CGAffineTransform?
-var cropTransform: CGAffineTransform?
-var resultBuffer: CVPixelBuffer?
-
-func croppedSampleBuffer(_ sampleBuffer: CMSampleBuffer, targetSize: CGSize) -> CVPixelBuffer? {
-  
-  guard let imageBuffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-    fatalError("Can't convert to CVImageBuffer.")
-  }
-  
-  // Only doing these calculations once for efficiency.
-  // If the incoming images could change orientation or size during a session, this would need to be reset when that happens.
-  if rotateTransform == nil {
-    let imageSize = CVImageBufferGetEncodedSize(imageBuffer)
-    let rotatedSize = CGSize(width: imageSize.height, height: imageSize.width)
+public func exifOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+    let curDeviceOrientation = UIDevice.current.orientation
+    let exifOrientation: CGImagePropertyOrientation
     
-    guard targetSize.width < rotatedSize.width, targetSize.height < rotatedSize.height else {
-      fatalError("Captured image is smaller than image size for model.")
+    switch curDeviceOrientation {
+    case UIDeviceOrientation.portraitUpsideDown:  // Device oriented vertically, home button on the top
+        exifOrientation = .left
+    case UIDeviceOrientation.landscapeLeft:       // Device oriented horizontally, home button on the right
+        exifOrientation = .upMirrored
+    case UIDeviceOrientation.landscapeRight:      // Device oriented horizontally, home button on the left
+        exifOrientation = .down
+    case UIDeviceOrientation.portrait:            // Device oriented vertically, home button on the bottom
+        exifOrientation = .up
+    default:
+        exifOrientation = .up
     }
-    
-    let shorterSize = (rotatedSize.width < rotatedSize.height) ? rotatedSize.width : rotatedSize.height
-    rotateTransform = CGAffineTransform(translationX: imageSize.width / 2.0, y: imageSize.height / 2.0).rotated(by: -CGFloat.pi / 2.0).translatedBy(x: -imageSize.height / 2.0, y: -imageSize.width / 2.0)
-    
-    let scale = targetSize.width / shorterSize
-    scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
-    
-    // Crop input image to output size
-    let xDiff = rotatedSize.width * scale - targetSize.width
-    let yDiff = rotatedSize.height * scale - targetSize.height
-    cropTransform = CGAffineTransform(translationX: xDiff/2.0, y: yDiff/2.0)
-  }
-  
-  // Convert to CIImage because it is easier to manipulate
-  let ciImage = CIImage(cvImageBuffer: imageBuffer)
-  let rotated = ciImage.transformed(by: rotateTransform!)
-  let scaled = rotated.transformed(by: scaleTransform!)
-  let cropped = scaled.transformed(by: cropTransform!)
-  
-  // Note that the above pipeline could be easily appended with other image manipulations.
-  // For example, to change the image contrast. It would be most efficient to handle all of
-  // the image manipulation in a single Core Image pipeline because it can be hardware optimized.
-  
-  // Only need to create this buffer one time and then we can reuse it for every frame
-  if resultBuffer == nil {
-    let result = CVPixelBufferCreate(kCFAllocatorDefault, Int(targetSize.width), Int(targetSize.height), kCVPixelFormatType_32BGRA, nil, &resultBuffer)
-    
-    guard result == kCVReturnSuccess else {
-      fatalError("Can't allocate pixel buffer.")
-    }
-  }
-  
-  // Render the Core Image pipeline to the buffer
-  context.render(cropped, to: resultBuffer!)
-  
-  //  For debugging
-  //  let image = imageBufferToUIImage(resultBuffer!)
-  //  print(image.size) // set breakpoint to see image being provided to CoreML
-  
-  return resultBuffer
+    return exifOrientation
 }
 
 // Only used for debugging.
