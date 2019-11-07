@@ -1,0 +1,7 @@
+source 'https://mscodehub.visualstudio.com/VisionSkills/_git/VisionSkillsPods'
+
+platform :ios, '11.0'
+target 'CVS_ObjectDetectorSample' do
+  use_frameworks!
+  pod 'MicrosoftCustomVisionMobile'
+end
