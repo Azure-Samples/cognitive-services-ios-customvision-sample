@@ -26,7 +26,7 @@ This sample application demonstrates how to take a model exported from the [Cust
 
 
 ### Replacing the sample model with your own object detector
-The model provided with the sample recognizes some fruits. To replace it with your own model exported from the [Custom Vision Service](https://www.customvision.ai) do the following, and then build and launch the application:
+The model provided with the sample recognizes some fruits. To replace it with your own model exported from [Custom Vision Service](https://www.customvision.ai) do the following, and then build and launch the application:
 
   1. [Create and train](https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/getting-started-build-a-classifier) a classifer with the Custom Vision Service. You must choose a "compact" domain such as **General (compact)** to be able to export your classifier. If you have an existing classifier you want to export instead, convert the domain in "settings" by clicking on the gear icon at the top right. In setting, choose a "compact" model, Save, and Train your project.
 
@@ -38,14 +38,12 @@ The model provided with the sample recognizes some fruits. To replace it with yo
 
   4. Build and run.
 
-*This sample is tested on iPhone devices*
+*This sample has been tested on iPhone devices*
 
 
 ### Compatibility
 
 This latest sample application relies on the new iOS library *Custom Vision inference run-time* (or simply *run-time*) to take care of compatibility. It handles:
-
-- __Resize and crop input image__: Resize the image to a certain size and crop its center before passing to CoreML inference engine. The target size of the image is determined per given model, by looking into model's layers.
 
 - __Version check__: Check the version of the exported model by looking at `cvexport.manifest` (more specifically, look for *ExporterVersion* field) and switch logic depending on model version.
 
@@ -53,7 +51,7 @@ This latest sample application relies on the new iOS library *Custom Vision infe
     
         - Major version is greater: Throw exception (supposing model format is unknown)
 
-        - Major version is same but minor version is greater: Still work. Run inference.
+        - Major version is same but minor version is greater: Still works. Run inference.
 
     - __Backward compatiblity__: Any newer version of the run-time should be able to handle older model versions.
 
