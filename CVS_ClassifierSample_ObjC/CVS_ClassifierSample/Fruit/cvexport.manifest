@@ -1,0 +1,12 @@
+{
+  "DomainType": "Classification",
+  "Platform": "CoreML",
+  "Flavor": null,
+  "ExporterVersion": "2.0",
+  "ExportedDate": "2019-06-11T07:59:50.8114866Z",
+  "IterationId": "00000000-0000-0000-0000-000000000000",
+  "ModelFileName": "model.mlmodel",
+  "LabelFileName": null,
+  "ModelFileSHA1": "598a22f8a182a6bb3ab49d3a5feefcff467aceaa",
+  "SchemaVersion": "1.0"
+}

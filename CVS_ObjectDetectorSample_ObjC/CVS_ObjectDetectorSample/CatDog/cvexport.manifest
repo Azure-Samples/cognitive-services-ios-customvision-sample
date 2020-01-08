@@ -1,0 +1,12 @@
+{
+  "DomainType": "ObjectDetection",
+  "Platform": "CoreML",
+  "Flavor": null,
+  "ExporterVersion": "2.0",
+  "ExportedDate": "2019-11-01T00:00:00.0000000Z",
+  "IterationId": "00000000-0000-0000-0000-000000000000",
+  "ModelFileName": "model.mlmodel",
+  "LabelFileName": "labels.txt",
+  "ModelFileSHA1": "db923a827e2b1dae4c01d64d0e66e49698810deb",
+  "SchemaVersion": "1.0"
+}
