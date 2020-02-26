@@ -42,7 +42,7 @@
 		5EBF651D1F0AA47700BCD353 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76B5ACDD1F159C7500EE183D /* BubbleLabelLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleLabelLayer.swift; sourceTree = "<group>"; };
 		76C510BB1F1587C60049422A /* BubbleLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleLayer.swift; sourceTree = "<group>"; };
-		8A8DBC6522B34304002C6B16 /* Fruit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fruit; path = /Users/kojiw/dev/air/VisionSkills/Samples/iOS/CustomVisionSamples/CVS_ClassifierSample_Swift/CVS_ClassifierSample/Fruit; sourceTree = "<absolute>"; };
+		8A8DBC6522B34304002C6B16 /* Fruit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fruit; path = Fruit; sourceTree = "<group>"; };
 		8AAFE0CC229E4514003EA94E /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		8AAFE0CE229E451B003EA94E /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
