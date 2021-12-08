@@ -50,7 +50,7 @@ This latest sample application relies on the new iOS library *Custom Vision infe
 
 - __Version check__: Check the version of the exported model by looking at `cvexport.manifest` (more specifically, look for *ExporterVersion* field) and switch logic depending on model version.
 
-    - __Fowrard compatibility__: It is when model version is newer than run-time's maximum supported model version.
+    - __Forward compatibility__: It is when model version is newer than run-time's maximum supported model version.
     
         - Major version is greater: Throw exception (supposing model format is unknown)
 
